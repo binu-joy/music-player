@@ -13,7 +13,6 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            overflow: hidden;
         }
         body {
             font-family: Arial, sans-serif;
@@ -21,8 +20,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100dvh;
             min-height: 100vh;
+            overflow-y: auto;
         }
         .player-container {
             width: 90%;
@@ -31,6 +30,8 @@
             border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         .player-header {
             background: linear-gradient(135deg, #6a11cb, #2575fc);
@@ -39,10 +40,14 @@
             text-align: center;
         }
         .player-header h1 {
-            margin: 0;
+            margin: 0 0 10px;
+        }
+        .current-song-title {
+            font-size: 16px;
+            font-weight: bold;
         }
         .playlist {
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
         }
         .song {
@@ -120,7 +125,7 @@
     <div class="player-container">
         <div class="player-header">
             <h1>J&amp;S Wedding Mass Choir</h1>
-            <p>Select a song to play</p>
+            <div class="current-song-title" id="current-song-title">Select a song to play</div>
         </div>
         <div class="progress-container">
             <div class="progress-bar" id="progress-bar">
@@ -157,6 +162,7 @@
         const durationEl = document.getElementById('duration');
         const loopOneBtn = document.getElementById('loop-one');
         const loopAllBtn = document.getElementById('loop-all');
+        const currentSongTitle = document.getElementById('current-song-title');
 
         let loopOne = false;
         let loopAll = false;
@@ -189,6 +195,7 @@
             document.querySelectorAll('.song').forEach(song => song.classList.remove('active'));
             playlist.children[index]?.classList.add('active');
             audio.src = songs[index].src;
+            currentSongTitle.textContent = "Playing: " + songs[index].title;
         }
 
         function playSong() {
@@ -243,13 +250,8 @@
             audio.currentTime = percent * audio.duration;
         }
 
-        progressBar.addEventListener('click', e => {
-            seekPosition(e.clientX);
-        });
-
-        progressBar.addEventListener('touchstart', e => {
-            seekPosition(e.touches[0].clientX);
-        });
+        progressBar.addEventListener('click', e => seekPosition(e.clientX));
+        progressBar.addEventListener('touchstart', e => seekPosition(e.touches[0].clientX));
 
         loopOneBtn.addEventListener('click', () => {
             loopOne = !loopOne;
